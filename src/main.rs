@@ -3,6 +3,7 @@ use std::io::Write;
 
 mod utils {
     pub mod image;
+    pub mod git;
 }
 
 fn get_input(prompt: &str) -> String {
