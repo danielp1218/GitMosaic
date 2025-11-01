@@ -1,12 +1,17 @@
 use image::{DynamicImage, GenericImageView, ImageBuffer, open, Luma};
 use colored::{ColoredString, Colorize};
 
-pub fn process_image(image_path: &str) {
+pub fn valid_image_path(path: &str) -> bool {
+    match open(path) {
+        Ok(_) => true,
+        Err(_) => false,
+    }
+}
+
+pub fn process_image(image_path: &str) -> Vec<Vec<u8>> {
     // Placeholder for image processing logic
     let img: DynamicImage = open(image_path)
         .expect("Failed to open image");
-
-    let (width, height) = img.dimensions();
 
     const GIT_GRAPH_WIDTH: u32 = 52;
     const GIT_GRAPH_HEIGHT: u32 = 7;
@@ -22,11 +27,10 @@ pub fn process_image(image_path: &str) {
         quantized[y as usize][x as usize] = idx;
     }
 
-    let max = quantized.iter().flatten().cloned().max().unwrap_or(1);
-    let min = quantized.iter().flatten().cloned().min().unwrap_or(0);
-    print!("min: {}, max: {}\n", min, max);
+    println!("Size {} x {}", quantized[0].len(), quantized.len());
 
     print_git_preview(&quantized);
+    quantized
 }
 
 fn print_git_preview(image: &Vec<Vec<u8>>) {

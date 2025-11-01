@@ -12,7 +12,7 @@ pub fn setup_git_repo(repo_name: &str, path: &str) {
         .expect("Failed to initialize git repository");
 }
 
-fn base_commit_cmd(repo_name: &str, path: &str) -> Command{
+pub fn base_commit_cmd(repo_name: &str, path: &str) -> Command{
     let mut commit_cmd = Command::new("git");
     commit_cmd.current_dir(Path::new(path).join(repo_name))
         .args(["commit", "--allow-empty", "-a", "--allow-empty-message", "-m", "\"\""]);
@@ -26,11 +26,12 @@ pub fn push_to_remote(repo_name: &str, path: &str, remote_url: &str) {
             .args(["repo", "create", format!("--source={}", repo_name).as_str(), "--private", "--push"])
             .status()
             .expect("Failed to create GitHub repository");
+        return;
     }
     
     Command::new("git")
         .current_dir(Path::new(path).join(repo_name))
-        .args(["remote", "add", "origin", remote_url])
+        .args(["remote", "add", "origin", &(remote_url.to_owned() + ".git")])
         .status()
         .expect("Failed to add remote");
 
@@ -41,17 +42,18 @@ pub fn push_to_remote(repo_name: &str, path: &str, remote_url: &str) {
         .expect("Failed to push to remote");
 }
 
-fn commit_with_date(commit_cmd: &mut Command, date: DateTime<FixedOffset>) {
+pub fn commit_with_date(commit_cmd: &mut Command, date: DateTime<FixedOffset>) {
     commit_cmd.env("GIT_COMMITTER_DATE", date.to_rfc3339())
         .env("GIT_AUTHOR_DATE", date.to_rfc3339());
-    commit_cmd.status().expect("commit failed");
+    commit_cmd.stdout(Stdio::null())
+        .status().expect("commit failed");
 }
 
-fn create_date(year: i32, month: u32, day: u32, hour: u32, minute: u32, second: u32) -> String {
+pub fn create_date(year: i32, month: u32, day: u32, hour: u32, minute: u32, second: u32) -> String {
     format!("{:04}-{:02}-{:02}T{:02}:{:02}:{:02}Z", year, month, day, hour, minute, second)
 }
 
-fn increment_date(date: DateTime<FixedOffset>, days: u64) -> DateTime<FixedOffset> {
+pub fn increment_date(date: DateTime<FixedOffset>, days: u64) -> DateTime<FixedOffset> {
     date.checked_add_days(Days::new(days)).expect("Date increment failed")
 }
 
@@ -96,21 +98,4 @@ pub fn get_max_daily_contributions(year: i32) -> u32 {
     let parts: Vec<&str> = stdout.split(':').collect();
     let stdout = parts.get(1).expect("Failed to get contribution count").trim();
     return stdout.trim().parse::<u32>().expect("Failed to parse max contributions");
-}
-
-
-
-fn main() {
-    println!("{}", get_max_daily_contributions(2025));
-    return;
-    // let repo_name: &str = "aaa"; // Change this to your repository path
-    // setup_git_repo(repo_name, "..");
-
-    // let mut commit_cmd = base_commit_cmd(repo_name, "..");
-
-    // println!("Initialized git repository at {}", repo_name);
-    // commit_with_date(&mut commit_cmd, create_date(2024, 1, 1));
-    // commit_with_date(&mut commit_cmd, increment_date(create_date(2024, 1, 1), 1));
-
-    // push_to_remote(repo_name, "..", "<remote-url>");
 }
