@@ -45,13 +45,19 @@ pub fn push_to_remote(repo_name: &str, path: &str, remote_url: &str) {
 
     Command::new("git")
         .current_dir(Path::new(path).join(repo_name))
-        .args(["remote", "add", "origin", &(remote_url.to_owned() + ".git")])
+        .args(["remote", "add", "origin", remote_url])
         .status()
         .expect("Failed to add remote");
 
     Command::new("git")
         .current_dir(Path::new(path).join(repo_name))
-        .args(["push", "-u", "origin", "master"])
+        .args(["pull", "origin", "main", "--rebase"])
+        .status()
+        .expect("Failed to pull from remote");
+
+    Command::new("git")
+        .current_dir(Path::new(path).join(repo_name))
+        .args(["push", "-u", "origin", "main"])
         .status()
         .expect("Failed to push to remote");
 }
