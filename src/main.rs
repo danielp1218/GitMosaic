@@ -48,7 +48,7 @@ fn main() {
         let image_path = get_input(
             &mut rl,
             "Enter the path to the image file: ",
-            |input| utils::image::valid_image_path(input),
+            utils::image::valid_image_path,
             "Invalid image path. Please enter a valid path.",
         );
         quantized_image = utils::image::process_image(&image_path);
@@ -139,8 +139,8 @@ fn main() {
     );
 
     for x in 0..quantized_image[0].len() {
-        for y in 0..quantized_image.len() {
-            let activity_lvl = quantized_image[y][x];
+        for row in &quantized_image {
+            let activity_lvl = row[x];
             for _ in 0..(mult * activity_lvl as u32) {
                 utils::git::commit_with_date(&mut commit_cmd, current_date);
                 pb.inc(1);

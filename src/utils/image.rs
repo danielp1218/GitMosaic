@@ -2,10 +2,7 @@ use colored::{ColoredString, Colorize};
 use image::{DynamicImage, open};
 
 pub fn valid_image_path(path: &str) -> bool {
-    match open(path) {
-        Ok(_) => true,
-        Err(_) => false,
-    }
+    open(path).is_ok()
 }
 
 pub fn process_image(image_path: &str) -> Vec<Vec<u8>> {
@@ -21,7 +18,7 @@ pub fn process_image(image_path: &str) -> Vec<Vec<u8>> {
         &img,
         GIT_GRAPH_WIDTH,
         GIT_GRAPH_HEIGHT,
-        image::imageops::FilterType::Lanczos3,
+        image::imageops::FilterType::CatmullRom,
     );
     let mut quantized = vec![vec![0u8; new_image.width() as usize]; new_image.height() as usize];
 
@@ -36,7 +33,7 @@ pub fn process_image(image_path: &str) -> Vec<Vec<u8>> {
     quantized
 }
 
-fn print_git_preview(image: &Vec<Vec<u8>>) {
+fn print_git_preview(image: &[Vec<u8>]) {
     let (width, height) = (image[0].len(), image.len());
     for y in (0..height).step_by(2) {
         for x in 0..width {
@@ -69,11 +66,11 @@ fn pixel_to_colour(pixel_top: u8, pixel_bot: Option<&u8>) -> ColoredString {
             _ => ret.truecolor(255, 0, 0),
         };
     }
-    return ret.truecolor(0, 0, 0);
+    ret.truecolor(0, 0, 0)
 }
 
 // linear quantization, map 0-255 to 0-(levels-1)
 // may want to change to something else later
 fn pixel_to_activity(pixel: image::Luma<u8>, levels: u8) -> u8 {
-    return (pixel[0] as f32 / 256.0 * levels as f32).floor() as u8;
+    (pixel[0] as f32 / 256.0 * levels as f32).floor() as u8
 }

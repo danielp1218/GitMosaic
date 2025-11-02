@@ -131,8 +131,8 @@ pub fn get_max_daily_contributions(year: i32) -> u32 {
         .get(1)
         .expect("Failed to get contribution count")
         .trim();
-    return stdout
+    stdout
         .trim()
         .parse::<u32>()
-        .expect("Failed to parse max contributions");
+        .expect("Failed to parse max contributions")
 }
