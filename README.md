@@ -4,6 +4,7 @@ A small, fast command-line tool (Rust) for turning images into GitHub contributi
 
 
 <img width="1268" height="286" alt="Screenshot 2025-11-01 at 20-39-41 danielp1218 (Daniel Pu)" src="https://github.com/user-attachments/assets/efd20dd9-d172-4896-ae1e-b71e4a1a732f" />
+<img width="1268" height="286" alt="Screenshot 2025-11-01 at 20-40-45 danielp1218 (Daniel Pu)" src="https://github.com/user-attachments/assets/7e5ba752-075a-4e18-b754-135c9ad10205" />
 
 ## Features
 - Converts input images into a grid suitable for representing as GitHub contribution activity.
