@@ -10,6 +10,10 @@ A small, fast command-line tool (Rust) for turning images into GitHub contributi
 - Converts input images into a grid suitable for representing as GitHub contribution activity.
 - Automates creating a repository and pushing timestamped commits to render the image on the contributions graph.
 
+## Prerequisites
+1. `git` is installed onto machine
+2.  `gh` cli installed and authenticated with github account
+
 ## Run
 
 Install Rust (if needed)
